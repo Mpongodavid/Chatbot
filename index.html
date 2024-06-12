@@ -2,6 +2,7 @@
 <html>
 <head>
 		<title>Get-out-bitches</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 		<style>
@@ -23,11 +24,9 @@
 						border-radius: 20px;
 						box-shadow: 0 4px 9px rgba(0, 0, 0, 0.2);
 						width: 100%;
-						max-width: 1500px;
-						max-height: 200000000px;
+						max-width: 800px; /* Adjust as necessary */
 						margin: 0;
 						justify-content: center;
-
 				}
 				input, button {
 						padding: 10px;
@@ -54,7 +53,7 @@
 						margin-top: 10px;
 						white-space: pre-wrap;
 						word-wrap: break-word;
-						max-height: 2000px;
+						max-height: 400px; /* Adjust as necessary */
 						overflow-y: auto;
 						display: none;
 				}
@@ -90,7 +89,7 @@
 				<form id="promptForm">
 						<label for="prompt">Provide a Question:</label><br>
 						<input type="text" id="prompt" name="prompt" placeholder="ask questions first"><br>
-						<button type="submit">Answer </button>
+						<button type="submit">Answer</button>
 				</form>
 				<div id="response">
 						<div id="responseBox" class="input_copy">
@@ -118,12 +117,14 @@
 								const prompt = $('#prompt').val();
 
 								fetch(`/typli?prompt=${encodeURIComponent(prompt)}`)
-										.then(response => response.json())
+										.then(response => response.json().catch(() => {
+												throw new Error('Invalid JSON response');
+										}))
 										.then(data => {
 												const responseBox = $('#responseBox .txt');
 												if (data.answer) {
 														responseBox.html(Prism.highlight(data.answer, Prism.languages.javascript, 'javascript'));
-														$('#responseBox').show(); 
+														$('#responseBox').show();
 												} else if (data.error) {
 														responseBox.text(`Error: ${data.error}`);
 														$('#responseBox').show();
@@ -132,7 +133,7 @@
 										.catch(error => {
 												const responseBox = $('#responseBox .txt');
 												responseBox.text(`Error: ${error.message}`);
-												$('#responseBox').show(); 
+												$('#responseBox').show();
 										});
 						});
 
